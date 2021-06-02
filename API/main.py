@@ -93,6 +93,26 @@ def result():
         cursor.close()
         conn.close()
 
+@app.route('/result/<string:nik>')
+def getresult(nik):
+    conn = None
+    cursor = None
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor(pymysql.cursors.DictCursor)
+        cursor.execute(
+            "SELECT No no, Provinsi provinsi, KabKota kabkota,Kecamatan kecamatan, Desa desa, NIK nik, Nama nama, PenerimaBansos penerima FROM result where nik=%s", nik)
+        row = cursor.fetchone()
+        resp = jsonify(row)
+        resp.status_code = 200
+        return resp
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close()
+        conn.close()
+
+
 @app.errorhandler(404)
 def not_found(error=None):
     message = {
